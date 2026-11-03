@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kulturbruer: Musikk og språk – Interkulturelt Senter</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #e8e4df; min-height: 100vh; }
+
+.container { max-width: 560px; margin: 0 auto; padding: 24px 16px 40px; }
+
+.header { text-align: center; background: #182a44; color: white; padding: 22px 16px; border-radius: 14px; margin-bottom: 18px; }
+.header .motto { font-style: italic; font-size: 12px; color: #aab4cc; margin-bottom: 6px; }
+.header h1 { font-size: 21px; font-weight: 900; letter-spacing: 1.5px; }
+.header h1 span { color: #C0392B; }
+
+.lang-intro { font-size: 13px; color: #555; text-align: center; margin-bottom: 18px; }
+
+.lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.lang-tile { background: white; border: 2px solid #ddd; border-radius: 12px; padding: 14px 8px; text-align: center; cursor: pointer; transition: all 0.15s ease; }
+.lang-tile:hover, .lang-tile:active { border-color: #C0392B; background: #fff5f5; transform: translateY(-1px); }
+.lang-tile .flag-img { width: 34px; height: 25px; object-fit: cover; border-radius: 3px; display: block; margin: 0 auto 6px; box-shadow: 0 0 0 1px rgba(0,0,0,0.12); }
+.lang-tile .flag-icon { width: 34px; height: 25px; display: block; margin: 0 auto 6px; border-radius: 3px; }
+.lang-tile .name { font-size: 14.5px; font-weight: 700; color: #182a44; line-height: 1.25; }
+
+#poster-view { display: none; }
+#poster-view.visible { display: block; }
+
+.poster-img-wrap { max-width: 100%; margin: 0 auto; }
+.poster-img-wrap img { width: 100%; display: block; border-radius: 6px; box-shadow: 0 6px 24px rgba(0,0,0,0.18); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 18px 0 8px; }
+.action-btn { flex: 1 1 140px; max-width: 220px; text-align: center; padding: 13px 14px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 14px; color: white; }
+.action-btn .ico { margin-right: 6px; }
+.action-btn.fb { background: #1877F2; }
+.action-btn.ms { background: #0084FF; }
+.action-btn.em { background: #182a44; }
+
+.back-btn { display: block; text-align: center; padding: 14px; font-size: 13px; color: #777; cursor: pointer; text-decoration: underline; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div id="lang-page">
+    <div class="header">
+      <div class="motto">verdens vidde under den norske himmelen</div>
+      <h1>KULTURBRUER: <span>MUSIKK OG SPRÅK</span></h1>
+    </div>
+    <p class="lang-intro">Vel språk / Choose your language / اختر لغتك / Wybierz język</p>
+    <div class="lang-grid" id="lang-grid"></div>
+  </div>
+
+  <div id="poster-view">
+    <span class="back-btn" onclick="goBack()">← Vel språk / Choose language</span>
+    <div class="poster-img-wrap">
+      <img id="poster-img" src="" alt="Plakat">
+    </div>
+    <div class="actions">
+      <a class="action-btn fb" href="https://www.facebook.com/InterkultureltSenter" target="_blank" rel="noopener"><span class="ico">📘</span>Facebook</a>
+      <a class="action-btn ms" href="https://m.me/InterkultureltSenter" target="_blank" rel="noopener"><span class="ico">💬</span>Messenger</a>
+      <a class="action-btn em" href="mailto:interkultureltsenter@gmail.com"><span class="ico">✉️</span>Email</a>
+    </div>
+    <span class="back-btn" onclick="goBack()">← Vel språk / Choose language</span>
+  </div>
+
+</div>
+
+<script>
+const langs = {
+  no:  { name: "Norsk",        cc: "no" },
+  pl:  { name: "Polski",       cc: "pl" },
+  uk:  { name: "Українська",   cc: "ua" },
+  en:  { name: "English",      cc: "gb" },
+  ar:  { name: "العربية",      icon: "crescent" },
+  so:  { name: "Soomaali",     cc: "so" },
+  ti:  { name: "ትግርኛ",        cc: "er" },
+  am:  { name: "አማርኛ",        cc: "et" },
+  fa:  { name: "فارسی",        cc: "ir" },
+  ps:  { name: "پښتو",         cc: "af" },
+  de:  { name: "Deutsch",      cc: "de" },
+  fr:  { name: "Français",     cc: "fr" },
+  es:  { name: "Español",      cc: "es" },
+  pt:  { name: "Português",    cc: "pt" },
+  ro:  { name: "Română",       cc: "ro" },
+  sr:  { name: "Српски",       cc: "rs" },
+  hr:  { name: "Hrvatski",     cc: "hr" },
+  sk:  { name: "Slovenčina",   cc: "sk" },
+  lt:  { name: "Lietuvių",     cc: "lt" },
+  lv:  { name: "Latviešu",     cc: "lv" },
+  fil: { name: "Filipino",     cc: "ph" },
+  th:  { name: "ภาษาไทย",      cc: "th" },
+  zh:  { name: "中文",         cc: "cn" },
+  ja:  { name: "日本語",        cc: "jp" },
+  bn:  { name: "বাংলা",        cc: "bd" },
+  ln:  { name: "Lingala",      cc: "cd" },
+  cs:  { name: "Čeština",      cc: "cz" }
+};
+
+const crescentIconSVG = `<svg class="flag-icon" viewBox="0 0 34 25" xmlns="http://www.w3.org/2000/svg">
+  <rect width="34" height="25" rx="3" fill="#0f6b42"/>
+  <circle cx="12" cy="12.5" r="7" fill="#ffffff"/>
+  <circle cx="15" cy="11.2" r="5.8" fill="#0f6b42"/>
+  <path d="M23,9.2 L23.76,11.45 L26.14,11.48 L24.24,12.9 L24.94,15.17 L23,13.8 L21.06,15.17 L21.76,12.9 L19.86,11.48 L22.24,11.45 Z" fill="#ffffff"/>
+</svg>`;
+
+const grid = document.getElementById('lang-grid');
+Object.keys(langs).forEach(code => {
+  const l = langs[code];
+  const btn = document.createElement('div');
+  btn.className = 'lang-tile';
+  btn.onclick = () => showLang(code);
+  const iconHtml = l.icon === 'crescent'
+    ? crescentIconSVG
+    : `<img class="flag-img" src="https://flagcdn.com/h48/${l.cc}.png" alt="" loading="lazy">`;
+  btn.innerHTML = `${iconHtml}<span class="name">${l.name}</span>`;
+  grid.appendChild(btn);
+});
+
+function showLang(code) {
+  const l = langs[code];
+  if (!l) return;
+  document.getElementById('poster-img').src = `plakaty/${code}.png`;
+  document.getElementById('poster-img').alt = l.name;
+  document.getElementById('lang-page').style.display = 'none';
+  document.getElementById('poster-view').classList.add('visible');
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  document.getElementById('lang-page').style.display = 'block';
+  document.getElementById('poster-view').classList.remove('visible');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
